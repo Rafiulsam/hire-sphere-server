@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require('cors');
 const port = process.env.PORT || 5000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 
 
@@ -30,11 +30,22 @@ async function run() {
         await client.connect();
 
         const jobsCollection = client.db("HireSphere").collection("jobs");
+
+        // API to get all jobs
         app.get('/jobs', async (req, res) => {
             const cursor = jobsCollection.find();
             const result = await cursor.toArray();
             res.send(result);
         }) 
+        
+        // API to get a single job by ID
+        app.get('/jobs/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) };    
+            const result = await jobsCollection.findOne(query);
+            res.send(result);
+        });
+        
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
