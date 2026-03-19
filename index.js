@@ -49,7 +49,7 @@ async function run() {
             res.send(result);
         });
 
-        // API to post a appication
+        // API to post a application
         app.post('/applications', async (req, res) => { 
             const application = req.body;
             const result = await applicationsCollection.insertOne(application);
