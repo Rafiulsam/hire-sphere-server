@@ -50,6 +50,13 @@ async function run() {
             const result = await jobsCollection.findOne(query);
             res.send(result);
         });
+        // API to post a new job
+        app.post('/jobs', async (req, res) => {
+            const newJob = req.body;
+            console.log(newJob);
+            const result = await jobsCollection.insertOne(newJob);
+            res.send(result);
+        })
 
         //Applications APIs
         //Api to get all applications
@@ -58,20 +65,22 @@ async function run() {
             const query = {
                 applicantEmail: applicant_email
             }
-            const result =await applicationsCollection.find(query).toArray();
+            const result = await applicationsCollection.find(query).toArray();
 
             // Not good practice 
             for (const application of result) {
                 const jobId = application.jobId
-                const jobQuery = {_id: new ObjectId(jobId)} 
+                const jobQuery = { _id: new ObjectId(jobId) }
                 const job = await jobsCollection.findOne(jobQuery)
                 application.company = job.company
                 application.title = job.title
                 application.company_logo = job.company_logo
                 application.location = job.location
             }
-           res.send(result);
+            res.send(result);
         })
+
+
 
         // API to post a application
         app.post('/applications', async (req, res) => {
