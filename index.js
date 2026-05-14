@@ -62,8 +62,9 @@ async function run() {
         //Api to get all applications
         app.get('/applications', async (req, res) => {
             const applicant_email = req.query.email;
-            const query = {
-                applicantEmail: applicant_email
+            const query = {}
+            if (applicant_email) {
+                query.applicant_email = applicant_email
             }
             const result = await applicationsCollection.find(query).toArray();
 
